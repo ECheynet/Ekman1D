@@ -1,7 +1,7 @@
 # Ekman1D
 Variable eddy viscosity Ekman layer in the ABL (1D)
 
-
+[![View Variable eddy viscosity Ekman layer in the ABL (1D) on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/74316-variable-eddy-viscosity-ekman-layer-in-the-abl-1d)
 [![DOI](https://zenodo.org/badge/264255959.svg)](https://zenodo.org/badge/latestdoi/264255959)
 
 ## Summary
