@@ -2,6 +2,8 @@
 Variable eddy viscosity Ekman layer in the ABL (1D)
 
 
+[![DOI](https://zenodo.org/badge/264255959.svg)](https://zenodo.org/badge/latestdoi/264255959)
+
 ## Summary
 
 Matlab implementation of the solution to the Ekman equations in the atmospheric boundary layer. The flow is assumed horizontal and homogeneous. however, a height-dependant eddy viscosity can be modelled. The solutions are provided in one-dimension.
