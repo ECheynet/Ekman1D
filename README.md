@@ -10,17 +10,20 @@ Variable eddy viscosity Ekman layer in the ABL (1D)
 
 ## Summary
 
-Matlab implementation of the solution to the Ekman equations in the atmospheric boundary layer. The flow is assumed horizontal and homogeneous. however, a height-dependant eddy viscosity can be modelled. The solutions are provided in one-dimension.
+Matlab implementation of the solution of the Ekman equations in the atmospheric boundary layer. The flow is assumed to be horizontal and homogeneous, but a height dependent turbulent viscosity can be modelled. The solutions are provided in one dimension.
 
-## Content
+## Contents
 
-The submission includes
+The submission contains
 
-  - The function EkmanAnalytic that provides analytics solution of Ekman's equations for a constant eddy viscosity in the atmospheric boundary layer.
-  - The function solveEkman that numerically solves Ekman's equations with an explicit finite difference scheme and allows the use of height-dependant eddy viscosity. The numerical implementation is partly inspired by [1].
-  - An example file Example0.mlx and reproduces some of the figures displayed in ref [2]
+  - The function EkmanAnalytic, which provides an analytical solution to Ekman's equations for a constant eddy viscosity in the atmospheric boundary layer.
+  - The solveEkman function, which numerically solves Ekman's equations using an explicit finite difference scheme and allows the use of height-dependent eddy viscosity. The numerical implementation is partly inspired by [1].
+  - The function solveEkman_bcp4v.m, which uses the Matlab function bcp4v to solve Ekman's equations.
+  - The function scm_bcp4v.m, which is used for more advanced single column models.
+  - An example file Example0.mlx which reproduces some of the figures shown in ref [2].
+  - An example file documentation_part2.mlx.mlx which uses the scm_bcp4v function.
 
-Any question, suggestion or comment is welcomed.
+Any questions, suggestions or comments are welcome.
 
 ## References:
 
