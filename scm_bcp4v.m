@@ -1,5 +1,32 @@
 function [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts)
-
+% [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts) solves a set of 
+% differential equations using the boundary value problem (BVP) approach. 
+% Input:
+% 
+%     latitude: a scalar value that represents the latitude of the location.
+%     para: a struct containing several parameters required for solving the differential equations. 
+%         h: a scalar value representing the height of the boundary layer.
+%         Km: a vector containing the eddy diffusivity coefficients for momentum at each vertical level.
+%         Kh: a vector containing the eddy diffusivity coefficients for heat at each vertical level.
+%         alpha: a scalar value representing the stability correction for the momentum flux.
+%         model: a string specifying the stability model to be used. If left empty, the function will use the default model.
+%         L: a scalar value representing the Obukhov length.
+%         u_star: a scalar value representing the friction velocity.
+%         bc_u: a vector containing the boundary conditions for u (zonal wind speed) at the top and bottom of the boundary layer.
+%         bc_v: a vector containing the boundary conditions for v (meridional wind speed) at the top and bottom of the boundary layer.
+%         bc_theta: a vector containing the boundary conditions for potential temperature at the top and bottom of the boundary layer. If left empty, the function will solve for momentum equations only.
+%     z: a vector containing the vertical levels at which the eddy diffusivity coefficients are defined.
+%     opts: a struct containing options for the BVP solver. If left empty, the function will use the default solver options.
+% 
+% Outputs:
+% 
+%     sol4c: a struct containing the solutions to the differential equations. It has the following fields:
+%         x: a vector containing the values of the independent variable (i.e., vertical level).
+%         y: a matrix containing the solutions for u, v, and theta (if applicable). The rows correspond to different variables, while the columns correspond to different vertical levels.
+%     Km2: a vector containing the eddy diffusivity coefficients for momentum at the same vertical levels as sol4c.
+%     Kh2: a vector containing the eddy diffusivity coefficients for heat at the same vertical levels as sol4c.
+% 
+%  Author: E. Cheynet  -- UiB -- Last modified: 03-04-2023
 %% Get parameters
 kappa = 0.4;
 Omega = 7.29e-5;
