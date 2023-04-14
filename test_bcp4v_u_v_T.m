@@ -1,4 +1,4 @@
-clearvars;close all;
+clearvars;close all;clc
 h = 1000;
 zmax = 0.99*h;
 Nz = 200;
@@ -12,20 +12,53 @@ z = logspace(log10(z0),log10(zmax),Nz);
 getK_V1 = @(K0,K_hat,K_star,z_star,z)  K_hat + (K0-K_hat).*exp(z/z_star.*(log((K_star-K_hat)./(K0-K_hat))));
 getK_V2 = @(a0,a1,K0,K_hat,K_star,z_star,z)  (a0 + a1.*z).*K0.*exp(z/z_star.*(log((K_star-K_hat)./(K0-K_hat))));
 
+% derivative of K w.r.t. z
+get_K1_p = @(K0,K_hat,K_star,z_star,z) (exp((z.*log(-(K_hat - K_star)./...
+    (K0 - K_hat)))./z_star).*log(-(K_hat - K_star)./(K0 - K_hat))*(K0 - K_hat))./z_star;
+getK_V2_p = @(a0,a1,K0,K_hat,K_star,z_star,z)  K0*a1*exp((z*log(-(K_hat - K_star)./...
+    (K0 - K_hat)))./z_star) + (K0.*exp((z.*log(-(K_hat - K_star)./(K0 - K_hat)))./z_star).*...
+    log(-(K_hat - K_star)./(K0 - K_hat)).*(a0 + a1*z))./z_star;
+ 
+
+
 Nk = 4;
 K = zeros(Nk,Nz);
+Kp = zeros(Nk,Nz);
+
 K(1,:) = 1.3.*ones(1,Nz); % K1
+
 
 K0 = 0.7; K_hat = 5.5; K_star = 4.5; z_star = 500;
 K(2,:) = getK_V1(K0,K_hat,K_star,z_star,z); % K2
+Kp(2,:) = get_K1_p(K0,K_hat,K_star,z_star,z);
+
+
 
 K0 = 1.4; K_hat = 0.7; K_star = 0.8; z_star = 500;
 K(3,:) = getK_V1(K0,K_hat,K_star,z_star,z); % K3
+Kp(3,:) = get_K1_p(K0,K_hat,K_star,z_star,z);
+
 
 a0 = 0.9; a1 = 2.7/50; K0 = 0.45; K_hat = 0.1; K_star = 0.3; z_star = 250;
 K(4,:) = getK_V2(a0,a1,K0,K_hat,K_star,z_star,z); % K4
+Kp(4,:) = getK_V2_p(a0,a1,K0,K_hat,K_star,z_star,z); % K4
+
+% %%
+% syms K0 K_hat K_star z_star z 
+% myFun = K_hat + (K0-K_hat).*exp(z/z_star.*(log((K_star-K_hat)./(K0-K_hat))));
+% f=symfun(myFun,z);
+% f1=symfun(diff(f),z);
+% 
+% 
+% syms K0 K_hat K_star z_star z  a0 a1 K_hat
+% myFun = (a0 + a1.*z).*K0.*exp(z/z_star.*(log((K_star-K_hat)./(K0-K_hat))));
+% f=symfun(myFun,z);
+% f1=symfun(diff(f),z);
+
+%%
 
 % z = linspace(1,h,Nz); % height vector
+clf;close all;
 figure
 for ii=1:Nk
     
@@ -43,7 +76,7 @@ for ii=1:Nk
     para.bc_u = [10 0];% boundary and initial conditions: [top-bottom]
     para.bc_v = [0 0]; % boundary and initial conditions: [top-bottom]
     
-    [sol4c] = scm_bcp4v(latitude,para,z,opts);
+    [sol4c] = scm_bcp4v(latitude,para,z,opts,'Km_p',Kp(ii,:));
     
     myZ = sol4c.x;
     myU = sol4c.y(1,:);

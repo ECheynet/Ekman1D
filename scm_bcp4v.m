@@ -1,4 +1,4 @@
-function [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts)
+function [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts,varargin)
 % [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts) solves a set of 
 % differential equations using the boundary value problem (BVP) approach. 
 % Input:
@@ -27,7 +27,17 @@ function [sol4c,Km2,Kh2] = scm_bcp4v(latitude,para,z,opts)
 %     Kh2: a vector containing the eddy diffusivity coefficients for heat at the same vertical levels as sol4c.
 % 
 %  Author: E. Cheynet  -- UiB -- Last modified: 03-04-2023
-%% Get parameters
+
+%% Inputparseer
+p = inputParser();
+p.CaseSensitive = false;
+p.addOptional('Kh_p',[]);
+p.addOptional('Km_p',[]);
+p.parse(varargin{:});
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+Kh_p = p.Results.Kh_p ; % derivative of eddy diffusibity for temperature
+Km_p = p.Results.Km_p ; % derivative of eddy diffusibity for momentum
+%%  Get parameters
 kappa = 0.4;
 Omega = 7.29e-5;
 f = 2*Omega*sind(abs(latitude));
@@ -46,10 +56,15 @@ if ~isempty(bc_theta),
     theta_top = bc_theta(1);
     theta_bottom = bc_theta(2);
 end
+
+
 %% Parametrize Km and Kh if necessary
 if isempty(Km)||isempty(Kh)
     [Km,Kh,Kh_p,Km_p] = similarityFun(z,L,kappa,u_star,alpha,model);
 end
+
+if isempty(Kh_p),Kh_p = zeros(size(Kh));end
+if isempty(Km_p),Km_p = zeros(size(Km));end
 %% Initial conditions
 solinit = bvpinit(z, [bc_u(:);bc_v(:);bc_theta(:)]);
 
@@ -76,11 +91,13 @@ Kh2 = interp1(z,Kh,sol4c.x);
         % y1 = u        % y2 = v
         % y3 = u'        % y4 = v'
         Km1= interp1(z,Km,z1);
+        Km1_p= interp1(z,Km_p,z1);
+        
         dydz = zeros(4,1);
         dydz(1) = y(3);
         dydz(2)= y(4);
-        dydz(3) = -1/Km1.*(f.*y(2));
-        dydz(4) = -1/Km1.*(f.*(ug-y(1)));
+        dydz(3) = -1/Km1.*(f.*y(2) + Km1_p.*y(3));
+        dydz(4) = -1/Km1.*(f.*(ug-y(1)) + Km1_p.*y(4) );
     end
     function dydz = bvpfcn_w_theta(z1,y)
         
